@@ -1,0 +1,1 @@
+This is a mini cryptocurrency built in Python.
