@@ -1,4 +1,5 @@
 import pdb
+import functools
 
 MINING_REWARD = 10
 
@@ -18,7 +19,6 @@ def hash_block(block):
 
 
 def get_balance(participant):
-    amount_sent, amount_rec = 0, 0
     tx_sender = [[tx["amount"] for tx in block["transactions"] if tx["sender"] == participant]
                  for block in blockchain]
     open_tx_sender = [tx["amount"]
@@ -30,6 +30,10 @@ def get_balance(participant):
     open_tx_recipient = [tx["amount"]
                          for tx in open_transactions if tx["recipient"] == participant]
     tx_recipient.append(open_tx_recipient)
+
+    # Calculate total sent and received for participant
+    amount_sent, amount_rec = 0, 0
+    # amount_sent = functools.reduce(lambda tx_sum, tx_amount: tx_sum + tx_amount[0], tx_sender, 0)
 
     for tx in tx_sender:
         for each_tx in tx:
