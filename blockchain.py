@@ -32,17 +32,19 @@ def get_balance(participant):
     tx_recipient.append(open_tx_recipient)
 
     # Calculate total sent and received for participant
-    amount_sent, amount_rec = 0, 0
-    # amount_sent = functools.reduce(lambda tx_sum, tx_amount: tx_sum + tx_amount[0], tx_sender, 0)
+    amount_sent = 0 
+    amount_rec = 0
+    # amount_sent = functools.reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_sender, 0)
+    # amount_rec = functools.reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_recipient, 0)
 
     for tx in tx_sender:
-        for each_tx in tx:
-            amount_sent += each_tx
+        if len(tx) > 0:
+            amount_sent += tx[0]
 
     for tx in tx_recipient:
-        for each_tx in tx:
-            amount_rec += each_tx
-
+        if len(tx) > 0:
+            amount_rec += tx[0]
+    # print(amount_rec)
     return amount_rec - amount_sent
 
 
@@ -103,6 +105,7 @@ def mine_block():
         "transactions": copied_transactions
     }
     blockchain.append(block)
+    pdb.set_trace()
     return True
 
 
