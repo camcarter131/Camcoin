@@ -1,5 +1,7 @@
 import pdb
 
+MINING_REWARD = 10
+
 genesis_block = {
     "previous_hash": "",
     "index": 0,
@@ -19,8 +21,15 @@ def get_balance(participant):
     amount_sent, amount_rec = 0, 0
     tx_sender = [[tx["amount"] for tx in block["transactions"] if tx["sender"] == participant]
                  for block in blockchain]
+    open_tx_sender = [tx["amount"]
+                      for tx in open_transactions if tx["sender"] == participant]
+    tx_sender.append(open_tx_sender)
+
     tx_recipient = [[tx["amount"] for tx in block["transactions"] if tx["recipient"] == participant]
                     for block in blockchain]
+    open_tx_recipient = [tx["amount"]
+                         for tx in open_transactions if tx["recipient"] == participant]
+    tx_recipient.append(open_tx_recipient)
 
     for tx in tx_sender:
         for each_tx in tx:
@@ -32,11 +41,22 @@ def get_balance(participant):
 
     return amount_rec - amount_sent
 
+
 def get_last_blockchain_value():
     """Returns the last value of the current blockchain"""
     if len(blockchain) < 1:
         return None
     return blockchain[-1]
+
+
+def verify_transaction(transaction):
+    sender_balance = get_balance(transaction["sender"])
+    return sender_balance >= transaction["amount"]
+
+
+def verify_transactions():
+    """Verify that all transactions that are in open_transactions are valid"""
+    return all([verify_transaction(tx) for tx in open_transactions])
 
 
 def add_transaction(recipient, sender=owner, amount=1.0):
@@ -52,19 +72,31 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         "recipient": recipient,
         "amount": amount
     }
-    open_transactions.append(transaction)
-    participants.add(sender)
-    participants.add(recipient)
+    if verify_transaction(transaction):
+        open_transactions.append(transaction)
+        participants.add(sender)
+        participants.add(recipient)
+        return True
+    return False
 
 
 def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
 
+    reward_transaction = {
+        "sender": "MINING",
+        "recipient": owner,
+        "amount": MINING_REWARD
+    }
+
+    copied_transactions = open_transactions[:]
+    copied_transactions.append(reward_transaction)
+
     block = {
         "previous_hash": hashed_block,
         "index": len(blockchain),
-        "transactions": open_transactions
+        "transactions": copied_transactions
     }
     blockchain.append(block)
     return True
@@ -109,6 +141,7 @@ while waiting_for_input:
     print("2: Mine a new block")
     print("3: Output the blockchain blocks")
     print("4: Output participants")
+    print("5: Check transaction validity")
     print("h: Manipulate the chain")
     print("q: Quit")
     print("-" * 20)
@@ -116,8 +149,11 @@ while waiting_for_input:
     if user_choice == "1":
         tx_data = get_transaction_value()
         recipient, amount = tx_data
-        add_transaction(recipient, amount=amount)
-        print(open_transactions)
+        if add_transaction(recipient, amount=amount):
+            print("Transaction added")
+        else:
+            print("Transaction failed!")
+
     elif user_choice == "2":
         if mine_block():
             open_transactions = []
@@ -125,6 +161,11 @@ while waiting_for_input:
         print_blockchain()
     elif user_choice == "4":
         print(participants)
+    elif user_choice == "5":
+        if verify_transactions():
+            print("All transactions are valid")
+        else:
+            print("There are invalid transactions")
     elif user_choice == "h":
         if len(blockchain) >= 1:
             blockchain[0] = {
@@ -132,7 +173,7 @@ while waiting_for_input:
                 "index": 0,
                 "transactions": [{"sender": "Toto", "recipient": "Cam", "amount": 42.1}]
             }
-    elif user_choice == "q":
+    elif user_choice == "q": 
         waiting_for_input = False
     else:
         print("Invalid input")
@@ -140,7 +181,7 @@ while waiting_for_input:
         print_blockchain()
         print("Invalid blockchain!")
         break
-    print(get_balance("Cam"))
+    print("Balance of {}: {:6.2f}".format(owner, get_balance(owner)))
 else:
     print("User left!")
 
