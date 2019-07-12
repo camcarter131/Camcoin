@@ -32,19 +32,20 @@ def get_balance(participant):
     tx_recipient.append(open_tx_recipient)
 
     # Calculate total sent and received for participant
-    amount_sent = 0 
+    # print(tx_sender)
+    amount_sent = 0
     amount_rec = 0
     # amount_sent = functools.reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_sender, 0)
     # amount_rec = functools.reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_recipient, 0)
 
-    for tx in tx_sender:
-        if len(tx) > 0:
-            amount_sent += tx[0]
+    for tx_list in tx_sender:
+        for tx in tx_list:
+            amount_sent += tx
 
-    for tx in tx_recipient:
-        if len(tx) > 0:
-            amount_rec += tx[0]
-    # print(amount_rec)
+    for tx_list in tx_recipient:
+        for tx in tx_list:
+            amount_rec += tx
+
     return amount_rec - amount_sent
 
 
@@ -105,7 +106,6 @@ def mine_block():
         "transactions": copied_transactions
     }
     blockchain.append(block)
-    pdb.set_trace()
     return True
 
 
@@ -180,7 +180,7 @@ while waiting_for_input:
                 "index": 0,
                 "transactions": [{"sender": "Toto", "recipient": "Cam", "amount": 42.1}]
             }
-    elif user_choice == "q": 
+    elif user_choice == "q":
         waiting_for_input = False
     else:
         print("Invalid input")
