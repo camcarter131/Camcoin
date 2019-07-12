@@ -1,6 +1,6 @@
 import pdb
-import functools
-import hashlib
+from functools import reduce
+import hashlib as hl
 import json
 
 MINING_REWARD = 10
@@ -22,7 +22,7 @@ def hash_block(block):
     Arguments:
         :block: The block to be hashed.
     """
-    return hashlib.sha256(json.dumps(block).encode()).hexdigest()
+    return hl.sha256(json.dumps(block).encode()).hexdigest()
 
 
 def get_balance(participant):
@@ -42,8 +42,8 @@ def get_balance(participant):
     # print(tx_sender)
     amount_sent = 0
     amount_rec = 0
-    # amount_sent = functools.reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_sender, 0)
-    # amount_rec = functools.reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_recipient, 0)
+    # amount_sent = reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_sender, 0)
+    # amount_rec = reduce(lambda tx_sum, tx: tx_sum + tx[0] if len(tx) > 0 else 0, tx_recipient, 0)
 
     for tx_list in tx_sender:
         for tx in tx_list:
