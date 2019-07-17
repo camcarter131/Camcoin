@@ -30,7 +30,6 @@ class Node:
     def listen_for_input(self):
         """A while loop for the user input interface"""
         waiting_for_input = True
-        verifier = Verification()
 
         while waiting_for_input:
             print("Please choose")
@@ -54,15 +53,15 @@ class Node:
             elif user_choice == "3":
                 self.print_blockchain()
             elif user_choice == "4":
-                if verifier.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
+                if Verification.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
                     print("All transactions are valid")
                 else:
-                    print("There are invalid trans actions")
+                    print("There are invalid transactions")
             elif user_choice == "q":
                 waiting_for_input = False
             else:
                 print("Invalid input")
-            if not verifier.verify_chain(self.blockchain.chain):
+            if not Verification.verify_chain(self.blockchain.chain):
                 self.print_blockchain()
                 print("Invalid blockchain!")
                 break 
