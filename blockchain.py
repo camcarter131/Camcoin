@@ -16,8 +16,6 @@ blockchain = []
 open_transactions = []
 # We are the owner of this blockchain node
 owner = "Cam"
-# Registered participant: ourselves plus others sending/receiving coin
-participants = {owner}
 
 
 def load_data():
@@ -33,7 +31,7 @@ def load_data():
             updated_blockchain = []
             for block in blockchain:
                 converted_tx = [Transaction(tx["sender"], tx["recipient"], tx["amount"])
-                    for tx in block["transactions"]]
+                                for tx in block["transactions"]]
                 updated_block = Block(
                     block["index"], block["previous_hash"], converted_tx, block["proof"])
                 updated_blockchain.append(updated_block)
@@ -41,13 +39,14 @@ def load_data():
             open_transactions = json.loads(file_content[1])
             updated_open_transactions = []
             for tx in open_transactions:
-                updated_tx = Transaction(tx["sender"], tx["recipient"], tx["amount"])
+                updated_tx = Transaction(
+                    tx["sender"], tx["recipient"], tx["amount"])
                 updated_open_transactions.append(updated_tx)
             open_transactions = updated_open_transactions
     except (IOError, IndexError):
         print("File not found!")
         # Our starting block for the blockchain
-        genesis_block = Block(0, "", [], 100, 0)
+        genesis_block = Block(0, "", [], 100)
         # Initializing out (empty) blockchain list
         blockchain = [genesis_block]
         # Unhandled transactions
@@ -62,9 +61,9 @@ load_data()
 def save_data():
     try:
         with open("blockchain.txt", mode="w") as f:
-            saveable_chain = [block.__dict__ for block in 
-                [Block(block_el.index, block_el.previous_hash, 
-                [tx.__dict__ for tx in block_el.transactions], block_el.proof, block_el.timestamp) for block_el in blockchain]]
+            saveable_chain = [block.__dict__ for block in
+                              [Block(block_el.index, block_el.previous_hash,
+                                     [tx.__dict__ for tx in block_el.transactions], block_el.proof) for block_el in blockchain]]
             f.write(json.dumps(saveable_chain))
             f.write('\n')
             saveable_tx = [tx.__dict__ for tx in open_transactions]
@@ -80,16 +79,17 @@ def save_data():
 
 def valid_proof(transactions, last_hash, proof):
     """Validate a proof of work number and see if it solves the puzzle algorithm
-    
+
     Arguments:
         :transactions: The transactions for the last block for which the proof is being validated
         :last_hash: The previous block's hash which will be stored in the current block
         :proof: The proof number we're testing
     """
-    guess = (str([tx.to_ordered_dict() for tx in transactions]) + str(last_hash) + str(proof)).encode()
-    print(guess)
+    guess = (str([tx.to_ordered_dict() for tx in transactions]) +
+             str(last_hash) + str(proof)).encode()
+    # print(guess)
     guess_hash = hash_string_256(guess)
-    print(guess_hash)
+    # print(guess_hash)
     return guess_hash[0:2] == "00"
 
 
@@ -179,7 +179,7 @@ def mine_block():
     last_block = blockchain[-1]
     # Hash the last block
     hashed_block = hash_block(last_block)
-    print(hashed_block)
+    # print(hashed_block)
     # Create proof of work
     proof = proof_of_work()
     # Miners are rewarded
@@ -238,8 +238,7 @@ while waiting_for_input:
     print("1: Add a new transaction value")
     print("2: Mine a new block")
     print("3: Output the blockchain blocks")
-    print("4: Output participants")
-    print("5: Check transaction validity")
+    print("4: Check transaction validity")
     print("q: Quit")
     print("-" * 20)
     user_choice = get_user_choice()
@@ -248,7 +247,7 @@ while waiting_for_input:
         recipient, amount = tx_data
         if add_transaction(recipient, amount=amount):
             print("Transaction added")
-        else: 
+        else:
             print("Transaction failed!")
 
     elif user_choice == "2":
@@ -258,8 +257,6 @@ while waiting_for_input:
     elif user_choice == "3":
         print_blockchain()
     elif user_choice == "4":
-        print(participants)
-    elif user_choice == "5":
         if verify_transactions():
             print("All transactions are valid")
         else:
