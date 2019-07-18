@@ -13,7 +13,7 @@ CORS(app)
 
 @app.route("/", methods=["GET"])
 def get_ui():
-    return Flask.render_template("index.html", token="Hello")
+    return "Hello"
 
 ###############################-----WALLET-----#####################################
 
