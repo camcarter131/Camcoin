@@ -139,6 +139,8 @@ class Blockchain:
         #     "recipient": recipient,
         #     "amount": amount
         # }
+        if self.host_node == None:
+            return False
 
         transaction = Transaction(sender, recipient, amount)
 
@@ -150,6 +152,9 @@ class Blockchain:
 
     def mine_block(self):
         """Create a new block and add open transactions to it"""
+        # First check if the wallet has been loaded
+        if self.host_node == None:
+            return False
         # Fetch the current last block of the blockchain
         last_block = self.__chain[-1]
         # Hash the last block
