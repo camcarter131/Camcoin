@@ -13,7 +13,7 @@ CORS(app)
 
 @app.route("/", methods=["GET"])
 def get_ui():
-    return "Works"
+    return Flask.render_template("index.html", token="Hello")
 
 ###############################-----WALLET-----#####################################
 
@@ -154,7 +154,9 @@ def add_transaction():
 
 @app.route("/transactions", methods=["GET"])
 def get_transactions():
-    pass
+    transactions = blockchain.get_open_transactions()
+    dict_transactions = [tx.__dict__ for tx in transactions]
+    return jsonify(dict_transactions)
 
 ###############################----------------------#####################################
 
