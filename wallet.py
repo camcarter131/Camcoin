@@ -36,8 +36,10 @@ class Wallet:
                 public_key = public_key[:-1]
                 self.private_key = private_key
                 self.public_key = public_key
+            return True
         except (IOError, IndexError):
             print("Loading wallet failed...")
+            return False
 
     def generate_keys(self):
         private_key = RSA.generate(1024, Crypto.Random.new().read)
