@@ -197,6 +197,6 @@ def remove_peer_node(self, node):
     self.save_data()
 
 def get_peer_nodes(self):
-    """Gets a list of all peer nodes"""
+    """Gets a set of all peer nodes"""
     return self.__peer_nodes[:]
 
