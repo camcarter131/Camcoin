@@ -23,9 +23,9 @@ class Blockchain:
         # Unhandled transactions
         self.__open_transactions = []
         # Read in blockchain from text file
-        self.load_data()
         self.host_node = host_node_id
         self.__peer_nodes = set()
+        self.load_data()
 
     @property
     def chain(self):
