@@ -91,6 +91,7 @@ def get_chain():
 
 ###############################-----NODE-----#####################################
 
+
 @app.route("/node", methods=["POST"])
 def add_node():
     values = request.get_json()
@@ -108,7 +109,7 @@ def add_node():
     blockchain.add_peer_node(node)
     response = {
         "message": "Node added successfully",
-        "all_nodes": list(blockchain.get_peer_nodes())
+        "all_nodes": blockchain.get_peer_nodes()
     }
     return jsonify(response), 201
 
@@ -175,6 +176,7 @@ def add_transaction():
             "message": "Creating a transaction failed..."
         }
         return jsonify(response), 500
+
 
 @app.route("/transactions", methods=["GET"])
 def get_transactions():

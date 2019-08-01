@@ -198,5 +198,5 @@ def remove_peer_node(self, node):
 
 def get_peer_nodes(self):
     """Gets a set of all peer nodes"""
-    return self.__peer_nodes[:]
+    return list(self.__peer_nodes)
 
