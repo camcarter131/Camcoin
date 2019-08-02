@@ -12,8 +12,12 @@ CORS(app)
 
 
 @app.route("/", methods=["GET"])
-def get_ui():
+def get_node_ui():
     return send_from_directory("frontend", "node.html")
+
+@app.route("/network", methods=["GET"])
+def get_network_ui():
+    return send_from_directory("frontend", "network.html")
 
 ###############################-----WALLET-----#####################################
 
@@ -124,6 +128,13 @@ def remove_node(node_url):
     blockchain.remove_peer_node(node_url)
     response = {
         "message": "Node removed",
+        "all_nodes": blockchain.get_peer_nodes()
+    }
+    return jsonify(response), 200
+
+@app.route("/nodes", methods=["GET"])
+def get_nodes():
+    response = {
         "all_nodes": blockchain.get_peer_nodes()
     }
     return jsonify(response), 200
