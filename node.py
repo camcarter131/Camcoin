@@ -210,6 +210,35 @@ def get_transactions():
     dict_transactions = [tx.__dict__ for tx in transactions]
     return jsonify(dict_transactions)
 
+@app.route("/", methods=[""])
+def broadcast_transactions():
+    values = request.get_json()
+    if not values:
+        response = {"message": "No data found..."}
+        return jsonify(response), 400
+    required = ["sender", "recipient", "amount", "signature"]
+    if not all(key in values for key in required):
+        response = {"message": "Some data is missing..."}
+        return jsonify(response), 400
+    success = blockchain.add_transaction(values["recipient"], values["sender"], values["signature"], values["amount"], is_receiving=True)
+    if success:
+        response = {
+            "message": "Successfully added transaction",
+            "transaction": {
+                "sender": values["sender"],
+                "recipient": values["recipient"],
+                "signature": values["signature"],
+                "amount": values["amount"]
+            }
+        }
+        return jsonify(response), 200
+    else:
+        response = {
+            "message": "Broadcasting transactions failed..."
+        }
+        return jsonify(response), 500
+
+
 ###############################----------------------#####################################
 
 
