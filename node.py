@@ -209,7 +209,7 @@ def get_transactions():
     return jsonify(dict_transactions)
 
 @app.route("/broadcast-transaction", methods=["POST"])
-def broadcast_transactions():
+def broadcast_transaction():
     values = request.get_json()
     if not values:
         response = {"message": "No data found..."}
