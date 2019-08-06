@@ -16,7 +16,7 @@ MINING_REWARD = 10
 
 
 class Blockchain:
-    def __init__(self, host_node_id):
+    def __init__(self, public_key, host_node_id):
         # Our starting block for the blockchain
         genesis_block = Block(0, "", [], 100)
         # Initializing out (empty) blockchain list
@@ -24,6 +24,7 @@ class Blockchain:
         # Unhandled transactions
         self.__open_transactions = []
         # Read in blockchain from text file
+        self.public_key = public_key
         self.host_node = host_node_id
         self.__peer_nodes = set()
         self.load_data()

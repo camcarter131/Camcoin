@@ -3,12 +3,13 @@ from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA256
 import Crypto.Random
 import binascii
-
+ 
 
 class Wallet:
-    def __init__(self):
+    def __init__(self, node_id):
         self.private_key = None
         self.public_key = None
+        self.node_id = node_id
 
     def create_keys(self):
         private_key, public_key = self.generate_keys()

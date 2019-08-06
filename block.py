@@ -8,3 +8,4 @@ class Block(Printable):
         self.transactions = transactions
         self.proof = proof
         # self.timestamp = time
+ 
